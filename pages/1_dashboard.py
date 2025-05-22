@@ -1,4 +1,4 @@
 import streamlit as st
 
 st.set_page_config(page_title="Prediction")
-set.title("Predictions")
+st.title("Predictions")

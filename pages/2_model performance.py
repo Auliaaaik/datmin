@@ -17,9 +17,9 @@ except FileNotFoundError:
     st.error("File CSV tidak ditemukan. Pastikan path dan nama file sudah benar.")
 
 # Lanjut jika file berhasil dimuat
-if 'heartdisease' in df.columns:
-    X = df.drop('heartdisease', axis=1)
-    y = df['heartdisease']
+if 'HeartDisease' in df.columns:
+    X = df.drop('HeartDisease', axis=1)
+    y = df['HeartDisease']
 
     # Bagi data
     X_train, X_test, y_train, y_test = train_test_split(

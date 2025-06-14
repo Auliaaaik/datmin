@@ -1,44 +1,45 @@
 import streamlit as st
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score
 
 st.set_page_config(page_title="Model Performance")
 st.title("Model Performance")
 
-import streamlit as st
-import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score
+# Konfigurasi halaman
+st.set_page_config(page_title="Akurasi Model Random Forest")
+st.title("Akurasi Model: Random Forest")
 
-# Judul dan konfigurasi
-st.set_page_config(page_title="Model Akurasi")
-st.title("Akurasi Model Klasifikasi")
-
-# Baca dataset
+# Load dataset
 df = pd.read_csv("model/Gagal_jantung.csv", sep=';')
 
 # Tampilkan dataset
 st.subheader("Isi Dataset:")
 st.dataframe(df)
 
-# Pisahkan fitur dan target (asumsikan kolom target bernama 'DEATH_EVENT')
-X = df.drop('DEATH_EVENT', axis=1)
-y = df['DEATH_EVENT']
+# Cek apakah kolom target ada
+if 'DEATH_EVENT' not in df.columns:
+    st.error("Kolom 'DEATH_EVENT' tidak ditemukan dalam dataset!")
+else:
+    # Pisahkan fitur dan target
+    X = df.drop('DEATH_EVENT', axis=1)
+    y = df['DEATH_EVENT']
 
-# Split data ke training dan testing
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=42
-)
+    # Split data
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42
+    )
 
-# Melatih model
-model = LogisticRegression(max_iter=1000)  # max_iter dinaikkan agar konvergen
-model.fit(X_train, y_train)
+    # Buat model Random Forest
+    model = RandomForestClassifier(n_estimators=100, random_state=42)
+    model.fit(X_train, y_train)
 
-# Prediksi
-y_pred = model.predict(X_test)
+    # Prediksi dan akurasi
+    y_pred = model.predict(X_test)
+    accuracy = accuracy_score(y_test, y_pred)
 
-# Hitung akurasi
-accuracy = accuracy_score(y_test, y_pred)
+    # Tampilkan hasil
+    st.subheader("Akurasi Model Random Forest:")
+    st.success(f"Akurasi: {accuracy:.2%}")
 
-# Tampilkan akurasi
-st.subheader("Akurasi Model Logistic Regression:")
-st.write(f"{accuracy:.2%}")

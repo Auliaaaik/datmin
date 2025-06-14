@@ -12,14 +12,14 @@ st.title("Model Prediksi: Heart Disease")
 # Load dataset
 df = pd.read_csv("model/Gagal_Jantung.csv", sep=';')
 
-testing = st.slider("Data Testing (%)", min_value=10, max_value=90, value=20)
+testing = st.slider("Data Testing (%)", min_value=10, max_value= 90, value=20)
 st.write(f"Nilai yang dipilih: {testing}%")
 t_size = testing / 100
 
 X = df.drop('HeartDisease', axis=1)
 y = df['HeartDisease']
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=t_size, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = t_size, random_state=42)
 
 @st.cache_resource
 def load_model(path):

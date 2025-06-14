@@ -6,7 +6,7 @@ st.set_page_config(page_title="Prediction")
 st.title("Dashboard")
 
 # Membaca dataset
-df = pd.read_csv("model/Gagal_jantung.csv", sep=';')
+df = pd.read_csv("model/Gagal_Jantung.csv", sep=';')
 
 # Tampilkan dataframe
 st.subheader("Isi Dataset:")

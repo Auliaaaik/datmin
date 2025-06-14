@@ -4,7 +4,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, classification_report
 
-# Konfigurasi halaman (hanya sekali, di awal)
+# Konfigurasi halaman
 st.set_page_config(page_title="Akurasi Model Random Forest")
 st.title("Akurasi Model: Random Forest")
 
@@ -36,6 +36,11 @@ else:
     y_pred = model.predict(X_test)
     accuracy = accuracy_score(y_test, y_pred)
 
-    # Tampilkan hasil
+    # Tampilkan hasil akurasi
     st.subheader("Akurasi Model:")
     st.success(f"Akurasi Random Forest: {accuracy:.2%}")
+
+    # Tampilkan classification report
+    st.subheader("Classification Report:")
+    report = classification_report(y_test, y_pred, output_dict=True)
+    st.dataframe(pd.DataFrame(report).transpose())

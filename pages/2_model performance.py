@@ -12,7 +12,7 @@ st.title("Model Prediksi: Heart Disease")
 # Load dataset
 df = pd.read_csv("model/Gagal_Jantung.csv", sep=';')
 
-testing = st.slider("Data Testing (%)", min_value=10, max_value=90, value=20)
+testing = st.slider("Data Testing (%)", min_value=10, max_value=100, value=20)
 st.write(f"Nilai yang dipilih: {testing}%")
 t_size = testing / 100
 

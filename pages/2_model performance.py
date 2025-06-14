@@ -11,6 +11,10 @@ st.title("Akurasi Model: Random Forest")
 # Load dataset
 df = pd.read_csv("model/Gagal_Jantung.csv", sep=';')
 
+testing = st.slider("Data Testing", min-value=10, max_value=90, value=20)
+st.write(f"Nilai yang dipilih: {testing}")
+t_size = testing/100
+
 # Tampilkan dataset
 st.subheader("Dataset Gagal Jantung:")
 st.dataframe(df)

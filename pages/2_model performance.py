@@ -9,7 +9,7 @@ st.set_page_config(page_title="Akurasi Model Random Forest")
 st.title("Akurasi Model: Random Forest")
 
 # Load dataset
-df = pd.read_csv("model/Gagal_jantung.csv", sep=';')
+df = pd.read_csv("model/Gagal_Jantung.csv", sep=';')
 
 # Tampilkan dataset
 st.subheader("Dataset Gagal Jantung:")

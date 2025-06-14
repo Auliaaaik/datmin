@@ -1,11 +1,9 @@
 import streamlit as st
+import pandas as pd
+import joblib
 
 st.set_page_config(page_title="Prediction")
 st.title("Predictions")
-
-import streamlit as st
-import pandas as pd
-import joblib
 
 # Konfigurasi halaman
 st.set_page_config(page_title="Prediksi Gagal Jantung", layout="centered")

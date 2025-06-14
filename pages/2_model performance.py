@@ -17,11 +17,11 @@ st.dataframe(df)
 
 # Cek apakah kolom target tersedia
 if 'DEATH_EVENT' not in df.columns:
-    st.error("Kolom 'DEATH_EVENT' tidak ditemukan dalam dataset!")
+    st.error("Kolom 'Gagal Jantung' tidak ditemukan dalam dataset!")
 else:
     # Pisahkan fitur dan target
-    X = df.drop('DEATH_EVENT', axis=1)
-    y = df['DEATH_EVENT']
+    X = df.drop('Gagal Jantung', axis=1)
+    y = df['Gagal Jantung']
 
     # Split data
     X_train, X_test, y_train, y_test = train_test_split(

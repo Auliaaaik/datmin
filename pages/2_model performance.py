@@ -5,34 +5,28 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, classification_report
 
 # Konfigurasi halaman
-st.set_page_config(page_title="Akurasi Model Random Forest")
-st.title("Akurasi Model: Random Forest")
+st.set_page_config(page_title="Prediksi Penyakit Jantung")
+st.title("Model Prediksi: Heart Disease")
 
 # Load dataset
-df = pd.read_csv("model/Gagal_Jantung.csv", sep=';')
+try:
+    df = pd.read_csv("model/Gagal_Jantung.csv", sep=';')
+    st.subheader("Dataset:")
+    st.dataframe(df)
+except FileNotFoundError:
+    st.error("File CSV tidak ditemukan. Pastikan path dan nama file sudah benar.")
 
-testing = st.slider("Data Testing", min-value=10, max_value=90, value=20)
-st.write(f"Nilai yang dipilih: {testing}")
-t_size = testing/100
+# Lanjut jika file berhasil dimuat
+if 'heartdisease' in df.columns:
+    X = df.drop('heartdisease', axis=1)
+    y = df['heartdisease']
 
-# Tampilkan dataset
-st.subheader("Dataset Gagal Jantung:")
-st.dataframe(df)
-
-# Cek apakah kolom target tersedia
-if 'HeartDisease' not in df.columns:
-    st.error("Kolom 'HeartDisease' tidak ditemukan dalam dataset!")
-else:
-    # Pisahkan fitur dan target
-    X = df.drop('HeartDisease', axis=1)
-    y = df['HeartDisease']
-
-    # Split data
+    # Bagi data
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.2, random_state=42
     )
 
-    # Buat dan latih model Random Forest
+    # Model
     model = RandomForestClassifier(n_estimators=100, random_state=42)
     model.fit(X_train, y_train)
 
@@ -40,11 +34,11 @@ else:
     y_pred = model.predict(X_test)
     accuracy = accuracy_score(y_test, y_pred)
 
-    # Tampilkan hasil akurasi
     st.subheader("Akurasi Model:")
     st.success(f"Akurasi Random Forest: {accuracy:.2%}")
 
-    # Tampilkan classification report
     st.subheader("Classification Report:")
     report = classification_report(y_test, y_pred, output_dict=True)
     st.dataframe(pd.DataFrame(report).transpose())
+else:
+    st.warning("Kolom 'heartdisease' tidak ditemukan dalam dataset.")

@@ -1,54 +1,56 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 # Konfigurasi halaman
-st.set_page_config(page_title="Dashboard - Gagal Jantung", layout="wide")
+st.set_page_config(page_title="Heart Failure Dashboard", layout="wide")
+st.title("📊 Heart Failure Dataset Dashboard")
 
-# Judul utama
-st.title("🫀 Dashboard Prediksi Gagal Jantung")
-st.markdown(
-    """
-    Aplikasi ini bertujuan untuk membantu memprediksi kemungkinan **gagal jantung** berdasarkan berbagai parameter medis.
-    Dataset yang digunakan merupakan kumpulan data pasien dengan berbagai fitur seperti tekanan darah, kolesterol, dan detak jantung maksimal.
-    """
-)
+# Deskripsi Dataset
+st.markdown("""
+Selamat datang di dashboard analisis dataset **Gagal Jantung**.  
+Dataset ini berisi informasi medis dari pasien untuk menganalisis risiko gagal jantung.
+""")
 
 # Membaca dataset
 df = pd.read_csv("model/Gagal_Jantung.csv", sep=';')
 
-# Info ukuran dataset
-st.markdown(f"📊 **Jumlah Data:** {df.shape[0]} baris, {df.shape[1]} kolom")
-
 # Tampilkan isi dataset
-st.subheader("📄 Isi Dataset")
+st.subheader("📂 Isi Dataset")
 st.dataframe(df, use_container_width=True)
 
-# Statistik deskriptif
-st.subheader("📈 Statistik Ringkas")
-st.write("Statistik umum dari fitur-fitur numerik yang ada di dataset.")
-st.dataframe(df.describe(), use_container_width=True)
+# Tampilkan info statistik
+st.subheader("📈 Statistik Umum")
+col1, col2, col3 = st.columns(3)
+col1.metric("🧓 Rata-rata Usia", f"{df['Age'].mean():.1f} tahun")
+col2.metric("🩸 Rata-rata Tekanan Darah", f"{df['RestingBP'].mean():.1f}")
+col3.metric("💉 Rata-rata Kolesterol", f"{df['Cholesterol'].mean():.1f}")
 
-# Visualisasi tambahan: Distribusi umur & kolesterol
-st.subheader("🔍 Visualisasi Data")
-col1, col2 = st.columns(2)
+st.write(df.describe())
 
-with col1:
-    st.markdown("**Distribusi Umur**")
-    fig1, ax1 = plt.subplots()
-    df["Age"].hist(bins=20, color="#1f77b4", edgecolor="black", ax=ax1)
-    ax1.set_xlabel("Usia")
-    ax1.set_ylabel("Jumlah Pasien")
-    st.pyplot(fig1)
+# Visualisasi: Distribusi umur
+st.subheader("📊 Distribusi Usia Pasien")
+fig1, ax1 = plt.subplots()
+sns.histplot(df['Age'], bins=20, kde=True, color='skyblue', ax=ax1)
+ax1.set_xlabel("Usia")
+ax1.set_ylabel("Jumlah Pasien")
+st.pyplot(fig1)
 
-with col2:
-    st.markdown("**Distribusi Kolesterol**")
-    fig2, ax2 = plt.subplots()
-    df["Cholesterol"].hist(bins=20, color="#ff7f0e", edgecolor="black", ax=ax2)
-    ax2.set_xlabel("Kolesterol")
-    ax2.set_ylabel("Jumlah Pasien")
-    st.pyplot(fig2)
+# Visualisasi: Korelasi antar fitur
+st.subheader("🧠 Korelasi Antar Fitur")
+fig2, ax2 = plt.subplots(figsize=(10, 6))
+sns.heatmap(df.corr(numeric_only=True), annot=True, cmap="coolwarm", fmt=".2f", ax=ax2)
+st.pyplot(fig2)
+
+# Visualisasi: Distribusi Jenis Kelamin
+st.subheader("👨‍⚕️👩‍⚕️ Distribusi Jenis Kelamin")
+gender_counts = df['Sex'].value_counts()
+fig3, ax3 = plt.subplots()
+ax3.pie(gender_counts, labels=["Pria", "Wanita"], autopct='%1.1f%%', colors=['#4C72B0','#55A868'], startangle=90)
+ax3.axis("equal")
+st.pyplot(fig3)
 
 # Footer
 st.markdown("---")
-st.markdown("🧠 *Dashboard ini dibuat sebagai bagian dari proyek Data Mining Gagal Jantung.*")
+st.markdown("Dibuat dengan ❤️ oleh Tim Analisis Data")

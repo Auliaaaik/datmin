@@ -1,68 +1,43 @@
 import streamlit as st
 import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
+import joblib
 from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, precision_score, recall_score, f1_score
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, classification_report
 
-# Page config
-st.set_page_config(page_title="Model Performance", layout="wide")
-st.title("📈 Evaluasi Model Prediksi Gagal Jantung")
+# Konfigurasi halaman
+st.set_page_config(page_title="Prediksi Penyakit Jantung")
+st.title("Model Prediksi: Heart Disease")
 
-# Load data
+# Load dataset
 df = pd.read_csv("model/Gagal_Jantung.csv", sep=';')
 
-# Preprocessing
-X = df.drop("HeartDisease", axis=1)
-y = df["HeartDisease"]
+testing = st.slider("Data Testing (%)", min_value=10, max_value= 90, value=20)
+st.write(f"Nilai yang dipilih: {testing}%")
+t_size = testing / 100
 
-# Train-test split
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+X = df.drop('HeartDisease', axis=1)
+y = df['HeartDisease']
 
-# Train model
-model = LogisticRegression(max_iter=1000)
-model.fit(X_train, y_train)
-y_pred = model.predict(X_test)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = t_size, random_state=42)
 
-# Evaluasi metrik (anggap 'Gagal Jantung' sebagai kelas positif)
-acc = accuracy_score(y_test, y_pred)
-prec = precision_score(y_test, y_pred, pos_label="Gagal Jantung", average='binary', zero_division=0)
-rec = recall_score(y_test, y_pred, pos_label="Gagal Jantung", average='binary', zero_division=0)
-f1 = f1_score(y_test, y_pred, pos_label="Gagal Jantung", average='binary', zero_division=0)
+@st.cache_resource
+def load_model(path):
+    model = joblib.load(path)
+    return model
 
-# 🎯 Metrik Ringkas
-st.subheader("📊 Ringkasan Metrik")
-col1, col2, col3, col4 = st.columns(4)
-col1.metric("Akurasi", f"{acc:.2%}")
-col2.metric("Presisi", f"{prec:.2%}")
-col3.metric("Recall", f"{rec:.2%}")
-col4.metric("F1-Score", f"{f1:.2%}")
+model = load_model('model/random_forest_model.pkl')
 
-# Confusion Matrix
-st.subheader("🧩 Confusion Matrix")
-cm = confusion_matrix(y_test, y_pred, labels=["Normal", "Gagal Jantung"])
-fig_cm, ax_cm = plt.subplots()
-sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=["Normal", "Gagal Jantung"], yticklabels=["Normal", "Gagal Jantung"])
-ax_cm.set_xlabel("Prediksi")
-ax_cm.set_ylabel("Aktual")
-st.pyplot(fig_cm)
+if st.button("Hasil"):
+    # Prediksi dengan model
+    y_pred = model.predict(X_test)
 
-# Classification Report
-st.subheader("📋 Classification Report")
-report = classification_report(y_test, y_pred, output_dict=True, zero_division=0)
-report_df = pd.DataFrame(report).transpose()
-st.dataframe(report_df.style.background_gradient(cmap='Oranges'), use_container_width=True)
+    # Hitung akurasi
+    accuracy = accuracy_score(y_test, y_pred)
+    st.subheader("Akurasi Model:")
+    st.success(f"Akurasi Random Forest: {accuracy:.2%}")
 
-# Visualisasi skor metrik
-st.subheader("📌 Visualisasi Skor Model")
-metric_names = ['Accuracy', 'Precision', 'Recall', 'F1 Score']
-metric_values = [acc, prec, rec, f1]
-fig_score, ax_score = plt.subplots()
-sns.barplot(x=metric_names, y=metric_values, palette='Set2')
-ax_score.set_ylim(0, 1)
-st.pyplot(fig_score)
-
-# Footer
-st.markdown("---")
-st.markdown("Model menggunakan **Logistic Regression** untuk prediksi penyakit jantung berdasarkan atribut pasien.")
+    # Classification report
+    st.subheader("Classification Report:")
+    report = classification_report(y_test, y_pred, output_dict=True)
+    st.dataframe(pd.DataFrame(report).transpose())

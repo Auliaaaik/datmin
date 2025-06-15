@@ -17,7 +17,7 @@ df = pd.read_csv("model/Gagal_Jantung.csv", sep=';')
 X = df.drop("HeartDisease", axis=1)
 y = df["HeartDisease"]
 
-# Train-test split dengan stratifikasi
+# Train-test split
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42, stratify=y
 )
@@ -27,21 +27,25 @@ model = LogisticRegression(max_iter=1000)
 model.fit(X_train, y_train)
 y_pred = model.predict(X_test)
 
-# --- Evaluasi Model ---
-st.subheader("📊 Ringkasan Metrik")
-
-# Cek apakah y_test & y_pred valid untuk evaluasi
-if len(set(y_test)) < 2 or len(set(y_pred)) < 2:
+# Menentukan kelas positif
+unique_labels = sorted(set(y_test) | set(y_pred))
+if len(unique_labels) < 2:
+    # hanya 1 kelas yang muncul
     acc = accuracy_score(y_test, y_pred)
+    st.subheader("📊 Ringkasan Metrik")
     st.metric("Akurasi", f"{acc:.2%}")
-    st.warning("⚠️ Tidak bisa menghitung Presisi, Recall, dan F1-Score karena hanya satu kelas yang muncul di data test atau hasil prediksi.")
+    st.warning("⚠️ Model tidak bisa menghitung precision, recall, dan F1-score karena hanya satu kelas yang muncul.")
 else:
+    pos_label = 1 if 1 in unique_labels else unique_labels[0]
+
     # Hitung metrik
     acc = accuracy_score(y_test, y_pred)
-    prec = precision_score(y_test, y_pred, zero_division=0)
-    rec = recall_score(y_test, y_pred, zero_division=0)
-    f1 = f1_score(y_test, y_pred, zero_division=0)
+    prec = precision_score(y_test, y_pred, pos_label=pos_label, zero_division=0)
+    rec = recall_score(y_test, y_pred, pos_label=pos_label, zero_division=0)
+    f1 = f1_score(y_test, y_pred, pos_label=pos_label, zero_division=0)
 
+    # Tampilkan metrik
+    st.subheader("📊 Ringkasan Metrik")
     col1, col2, col3, col4 = st.columns(4)
     col1.metric("Akurasi", f"{acc:.2%}")
     col2.metric("Presisi", f"{prec:.2%}")
@@ -50,17 +54,17 @@ else:
 
     # Confusion Matrix
     st.subheader("🧩 Confusion Matrix")
-    cm = confusion_matrix(y_test, y_pred)
+    cm = confusion_matrix(y_test, y_pred, labels=unique_labels)
     fig_cm, ax_cm = plt.subplots()
     sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
-                xticklabels=["Tidak", "Ya"], yticklabels=["Tidak", "Ya"])
+                xticklabels=unique_labels, yticklabels=unique_labels)
     ax_cm.set_xlabel("Prediksi")
     ax_cm.set_ylabel("Aktual")
     st.pyplot(fig_cm)
 
     # Classification Report
     st.subheader("📋 Classification Report")
-    report = classification_report(y_test, y_pred, output_dict=True)
+    report = classification_report(y_test, y_pred, output_dict=True, zero_division=0)
     report_df = pd.DataFrame(report).transpose()
     st.dataframe(report_df.style.background_gradient(cmap='Oranges'), use_container_width=True)
 

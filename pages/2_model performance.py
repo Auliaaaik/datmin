@@ -48,7 +48,8 @@ if st.button("Hasil"):
     st.subheader("Classification Report:")
     report = classification_report(y_test, y_pred, output_dict=True)
     st.dataframe(pd.DataFrame(report).transpose())
+    # Footer
+    st.write("---")
+    st.write("🧠 Model ini menggunakan **Random Forest Classifier** untuk memprediksi kemungkinan penyakit jantung berdasarkan atribut pasien.")
 
-# Footer
-st.write("---")
-st.write("🧠 Model ini menggunakan **Random Forest Classifier** untuk memprediksi kemungkinan penyakit jantung berdasarkan atribut pasien.")
+

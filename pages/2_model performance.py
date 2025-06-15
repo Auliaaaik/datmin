@@ -9,6 +9,13 @@ from sklearn.metrics import accuracy_score, classification_report
 st.set_page_config(page_title="Prediksi Penyakit Jantung")
 st.title("Model Prediksi: Heart Disease")
 
+# 🔍 Deskripsi Singkat
+st.write("""
+Model ini bertujuan untuk memprediksi apakah seorang pasien mengalami **penyakit jantung** atau tidak, 
+berdasarkan data historis pasien yang telah dilabeli. Model yang digunakan adalah **Random Forest Classifier**, 
+yang terbukti efektif dalam klasifikasi berbasis data medis.
+""")
+
 # Load dataset
 df = pd.read_csv("model/Gagal_Jantung.csv", sep=';')
 

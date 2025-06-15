@@ -79,4 +79,4 @@ if st.button("🔍 Prediksi Gagal Jantung"):
     else:
         st.success(f"✅ Berdasarkan data yang dimasukkan, pasien **tidak berisiko mengalami gagal jantung**.\n\n**Probabilitas: {probability:.2%}**")
         
-        st.write("Hasil prediksi berdasarkan atribut atribut yang dimasukkan, hasil tidak selalu akurat, selalu konsultasikan ke dokter untuk hasil yang lebih akurat") 
+        st.caption("Hasil prediksi berdasarkan atribut atribut yang dimasukkan, hasil tidak selalu tepat, selalu konsultasikan ke dokter untuk hasil yang lebih akurat") 

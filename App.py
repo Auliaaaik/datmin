@@ -5,7 +5,7 @@ from PIL import Image
 image = Image.open("assets/jantung.png")
 
 # Tampilkan gambar
-st.image(image, caption="Ilustrasi Gagal Jantung", use_container_width=True)
+st.image(image, caption="Ilustrasi Jantung", use_container_width=True)
 
 # Judul Aplikasi
 st.title("Selamat Datang di Aplikasi Prediksi Penyakit Gagal Jantung")

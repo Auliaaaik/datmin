@@ -1,13 +1,11 @@
 import streamlit as st
+from PIL import Image
 
-# Konfigurasi layout biar lebar penuh
-st.set_page_config(layout="wide")
+# Load gambar dari folder assets
+image = Image.open("assets/jantung.png")
 
-# Tambahkan gambar ilustrasi jantung
-st.image(
-    "https://cdn.pixabay.com/photo/2016/03/31/19/14/heart-1297622_960_720.png",
-    use_container_width=True  # Ini pengganti use_column_width
-)
+# Tampilkan gambar
+st.image(image, caption="Ilustrasi Gagal Jantung", use_container_width=True)
 
 # Judul Aplikasi
 st.title("Selamat Datang di Aplikasi Prediksi Penyakit Gagal Jantung")

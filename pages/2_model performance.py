@@ -4,10 +4,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import (
-    classification_report, confusion_matrix,
-    accuracy_score, precision_score, recall_score, f1_score
-)
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, precision_score, recall_score, f1_score
 
 # Page config
 st.set_page_config(page_title="Model Performance", layout="wide")
@@ -20,26 +17,31 @@ df = pd.read_csv("model/Gagal_Jantung.csv", sep=';')
 X = df.drop("HeartDisease", axis=1)
 y = df["HeartDisease"]
 
-# Train-test split
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+# Train-test split dengan stratifikasi
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
 
 # Train model
 model = LogisticRegression(max_iter=1000)
 model.fit(X_train, y_train)
 y_pred = model.predict(X_test)
 
-# Cek jumlah kelas di test set
-if len(set(y_test)) < 2:
-    st.warning("⚠️ Data test hanya mengandung satu kelas. Metrik evaluasi mungkin tidak akurat atau gagal dihitung.")
+# --- Evaluasi Model ---
+st.subheader("📊 Ringkasan Metrik")
+
+# Cek apakah y_test & y_pred valid untuk evaluasi
+if len(set(y_test)) < 2 or len(set(y_pred)) < 2:
+    acc = accuracy_score(y_test, y_pred)
+    st.metric("Akurasi", f"{acc:.2%}")
+    st.warning("⚠️ Tidak bisa menghitung Presisi, Recall, dan F1-Score karena hanya satu kelas yang muncul di data test atau hasil prediksi.")
 else:
     # Hitung metrik
     acc = accuracy_score(y_test, y_pred)
-    prec = precision_score(y_test, y_pred, pos_label=1, zero_division=0)
-    rec = recall_score(y_test, y_pred, pos_label=1, zero_division=0)
-    f1 = f1_score(y_test, y_pred, pos_label=1, zero_division=0)
+    prec = precision_score(y_test, y_pred, zero_division=0)
+    rec = recall_score(y_test, y_pred, zero_division=0)
+    f1 = f1_score(y_test, y_pred, zero_division=0)
 
-    # 🎯 Metrik Ringkas
-    st.subheader("📊 Ringkasan Metrik")
     col1, col2, col3, col4 = st.columns(4)
     col1.metric("Akurasi", f"{acc:.2%}")
     col2.metric("Presisi", f"{prec:.2%}")
@@ -50,7 +52,7 @@ else:
     st.subheader("🧩 Confusion Matrix")
     cm = confusion_matrix(y_test, y_pred)
     fig_cm, ax_cm = plt.subplots()
-    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', 
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
                 xticklabels=["Tidak", "Ya"], yticklabels=["Tidak", "Ya"])
     ax_cm.set_xlabel("Prediksi")
     ax_cm.set_ylabel("Aktual")
@@ -74,7 +76,4 @@ else:
 
 # Footer
 st.markdown("---")
-st.markdown(
-    "✅ Model menggunakan **Logistic Regression** untuk prediksi penyakit jantung berdasarkan atribut pasien.\n\n"
-    "Silakan eksplor halaman lainnya untuk visualisasi data dan pengujian model lebih lanjut."
-)
+st.markdown("Model menggunakan **Logistic Regression** untuk prediksi penyakit jantung berdasarkan atribut pasien.")

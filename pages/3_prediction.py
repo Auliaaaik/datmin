@@ -75,8 +75,8 @@ if st.button("🔍 Prediksi Gagal Jantung"):
     probability = model.predict_proba(input_df)[0][1]  # Probabilitas positif
 
     if prediction == 1:
-        st.error(f"⚠️ Berdasarkan data yang dimasukkan, pasien kemungkinan mengalami **gagal jantung**.\n\n**Probabilitas: {probability:.2%}**")
+        st.error(f"⚠️ Berdasarkan data yang dimasukkan, resiko pasien mengalami **gagal jantung** adalah \n\n**Probabilitas: {probability:.2%}**")
     else:
-        st.success(f"✅ Berdasarkan data yang dimasukkan, pasien **tidak berisiko mengalami gagal jantung**.\n\n**Probabilitas: {probability:.2%}**")
+        st.success(f"✅ Berdasarkan data yang dimasukkan, resiko pasien tidak mengalami **gagal jantung** adalah \n\n**Probabilitas: {probability:.2%}**")
         
         st.caption("Hasil prediksi berdasarkan atribut atribut yang dimasukkan, hasil tidak selalu tepat, selalu konsultasikan ke dokter untuk hasil yang lebih akurat") 

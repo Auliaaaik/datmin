@@ -34,33 +34,36 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=t_size, rand
 # Load model
 @st.cache_resource
 def load_model(path):
-    model = joblib.load(path)
-    return model
+    model = joblib.load(path)
+    return model
 
 model = load_model('model/random_forest_model.pkl')
 
 # Tombol prediksi
 if st.button("🔍 Tampilkan Hasil"):
-    y_pred = model.predict(X_test)
+    y_pred = model.predict(X_test)
 
-    # Akurasi
-    accuracy = accuracy_score(y_test, y_pred)
-    st.subheader("✅ Akurasi Model")
-    st.metric(label="Akurasi Random Forest", value=f"{accuracy:.2%}")
+    # Akurasi
+    accuracy = accuracy_score(y_test, y_pred)
+    st.subheader("✅ Akurasi Model")
+    st.metric(label="Akurasi Random Forest", value=f"{accuracy:.2%}")
 
-    # Classification Report
-    st.subheader("📄 Classification Report")
-    report = classification_report(y_test, y_pred, output_dict=True, zero_division=0)
-    report_df = pd.DataFrame(report).transpose()
-    st.dataframe(report_df.style.background_gradient(cmap="YlGnBu"), use_container_width=True)
+    # Classification Report
+    st.subheader("📄 Classification Report")
+    report = classification_report(y_test, y_pred, output_dict=True, zero_division=0)
+    report_df = pd.DataFrame(report).transpose()
+    st.dataframe(report_df.style.background_gradient(cmap="YlGnBu"), use_container_width=True)
 
-    # Visualisasi barplot
-    st.subheader("📊 Visualisasi Skor Metrik")
-    scores = report_df.loc[['accuracy', 'precision', 'recall', 'f1-score']].dropna()
-    fig, ax = plt.subplots()
-    sns.barplot(x=scores.index, y=scores['support'], palette='Set2')
-    ax.set_title("Support Tiap Metrik", fontsize=12)
-    st.pyplot(fig)
+    # Visualisasi barplot
+    st.subheader("📊 Visualisasi Skor Metrik")
+    metric_names = ['precision', 'recall', 'f1-score']
+    scores = report_df.loc[metric_names].reset_index()
+    fig, ax = plt.subplots()
+    sns.barplot(x='index', y='f1-score', data=scores, palette='Set2')
+    ax.set_ylabel("Nilai Skor")
+    ax.set_xlabel("Metrik")
+    ax.set_title("Perbandingan Skor Metrik")
+    st.pyplot(fig)
 
 # Footer
 st.markdown("---")

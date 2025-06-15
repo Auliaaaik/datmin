@@ -13,7 +13,7 @@ st.title("Selamat Datang di Aplikasi Prediksi Penyakit Gagal Jantung")
 # Deskripsi Penjelasan
 st.markdown("""
 Aplikasi ini dirancang untuk membantu pengguna dalam **memprediksi risiko gagal jantung**
-berdasarkan berbagai **gejala klinis** dan **parameter kesehatan** yang dimasukkan.
+berdasarkan berbagai **gejala klinis** dan **parameter kesehatan** pasien.
 
 ---
 

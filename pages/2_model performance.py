@@ -10,13 +10,6 @@ import seaborn as sns
 st.set_page_config(page_title="Prediksi Penyakit Jantung", layout="wide")
 st.title("🫀 Model Prediksi: Heart Disease")
 
-# 🔍 Deskripsi Singkat
-st.markdown("""
-Model ini bertujuan untuk memprediksi apakah seorang pasien mengalami **penyakit jantung** atau tidak, 
-berdasarkan data historis pasien yang telah dilabeli. Model yang digunakan adalah **Random Forest Classifier**, 
-yang terbukti efektif dalam klasifikasi berbasis data medis.
-""")
-
 # Load dataset
 df = pd.read_csv("model/Gagal_Jantung.csv", sep=';')
 
